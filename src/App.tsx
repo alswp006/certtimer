@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import Select from './pages/Select';
 import Checkin from './pages/Checkin';
 import CheckinDone from './pages/CheckinDone';
+import Report from './pages/Report';
+import Quiz from './pages/Quiz';
 import { AppDataProvider } from '@/lib/store';
 import { ScreenScaffold } from '@/components/ScreenScaffold';
 import { EmptyState } from '@/components/StateView';
@@ -40,8 +42,8 @@ export default function App() {
         <Route path="/select" element={<Select />} />
         <Route path="/checkin" element={<Checkin />} />
         <Route path="/checkin/done" element={<CheckinDone />} />
-        <Route path="/report" element={<ComingSoon title="합격 예측 리포트" tabRoot />} />
-        <Route path="/quiz" element={<ComingSoon title="오늘의 퀴즈" tabRoot />} />
+        <Route path="/report" element={<Report />} />
+        <Route path="/quiz" element={<Quiz />} />
         <Route path="/wrong" element={<ComingSoon title="오답노트" />} />
         {DevTdsGallery && (
           <Route

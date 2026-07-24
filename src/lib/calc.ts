@@ -128,6 +128,49 @@ function mulberry32(seed: number): () => number {
   };
 }
 
+// ============================================================================
+// F5 AC-1: 합격 예측 점수 — 진행률(60%) + 최근 7일 목표 대비 달성률(40%) 가중합
+// (SPEC Assumptions #4: 고정 상수 가중치, 동일 입력 → 동일 출력 재현성 보장)
+// ============================================================================
+
+const PROGRESS_WEIGHT = 0.6;
+const TREND_WEIGHT = 0.4;
+const TREND_WINDOW_DAYS = 7;
+
+export interface TrendCheckIn {
+  date: string;
+  minutes: number;
+}
+
+// 최근 7일 각각의 학습 분을 dailyGoal 대비 달성률로 환산해 평균낸다(개별 일자 100% 상한).
+export function calcRecentTrend(
+  checkIns: TrendCheckIn[],
+  dailyGoal: number,
+  today: string
+): number {
+  if (dailyGoal <= 0) return 100;
+  const minutesByDate = new Map(checkIns.map((c) => [c.date, c.minutes]));
+  const todayTs = parseDateUTC(today);
+  let sum = 0;
+  for (let i = 0; i < TREND_WINDOW_DAYS; i++) {
+    const dateStr = new Date(todayTs - i * MS_PER_DAY).toISOString().slice(0, 10);
+    const minutes = minutesByDate.get(dateStr) ?? 0;
+    sum += Math.min(100, (minutes / dailyGoal) * 100);
+  }
+  return Math.round(sum / TREND_WINDOW_DAYS);
+}
+
+export function calcReportScore(progressPct: number, trendPct: number): number {
+  return Math.round(progressPct * PROGRESS_WEIGHT + trendPct * TREND_WEIGHT);
+}
+
+// mapScoreLabel의 '분발필요'/'순항중'/'합격유력'을 SPEC 표기("분발 필요" 등, 띄어쓰기 포함)로 변환
+export function scoreLabelDisplay(label: CalcScoreLabel): string {
+  if (label === '분발필요') return '분발 필요';
+  if (label === '순항중') return '순항 중';
+  return '합격 유력';
+}
+
 export function pickDailyQuizIds<T extends { id: string }>(
   quizBank: T[],
   count: number,
