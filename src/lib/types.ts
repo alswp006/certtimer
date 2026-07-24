@@ -111,6 +111,7 @@ export interface ScoreResult {
  * Each route has a specific state shape:
  * - /checkin/done: { minutesToday, streakCurrent }
  * - /select: { mode: 'onboard' | 'change' }
+ * - /, /checkin, /report, /quiz: no navigation state required
  */
 export type RouteState =
   | {
@@ -125,4 +126,20 @@ export type RouteState =
       state: {
         mode: 'onboard' | 'change';
       };
+    }
+  | {
+      pathname: '/';
+      state?: undefined;
+    }
+  | {
+      pathname: '/checkin';
+      state?: undefined;
+    }
+  | {
+      pathname: '/report';
+      state?: undefined;
+    }
+  | {
+      pathname: '/quiz';
+      state?: undefined;
     };
