@@ -1,0 +1,21 @@
+{
+  "koreanName": "시험타이머",
+  "englishName": "CertTimer",
+  "appName": "cert-timer",
+  "ageRating": "전체",
+  "supportEmail": "support@aifactory.dev",
+  "category": {
+    "primary": "교육"
+  },
+  "subtitle": "매일 공부, 시험까지 D-day",
+  "description": "시험을 등록하면 남은 일수가 표시됩니다. 오늘 공부한 시간을 체크인하면 일일 목표 학습량과 달성률이 시각화됩니다. 스탑워치로 정확하게 시간을 측정하거나 수동으로 입력할 수 있으며, 연속 체크인 스트릭으로 동기부여를 유지할 수 있습니다. 리워드 광고를 시청하면 누적 학습량 기반의 합격 가능성 예측 리포트를 확인할 수 있습니다.",
+  "searchKeywords": [
+    "자격증",
+    "시험준비",
+    "학습추적",
+    "D-day",
+    "시험일정",
+    "공부기록",
+    "체크인"
+  ]
+}
