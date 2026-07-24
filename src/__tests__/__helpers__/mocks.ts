@@ -2,21 +2,22 @@
  * Shared test mocks for Toss Mini App packets.
  *
  * Usage at the top of any test file:
- *   import { mockTds, mockAppsInToss, mockRouter } from "@/__tests__/__helpers__/mocks";
+ *   import { mockTds, mockAppsInToss } from "@/__tests__/__helpers__/mocks";
  *   mockTds();
  *   mockAppsInToss();
- *   mockRouter();
  *
- * Or use all at once:
- *   import { mockAll } from "@/__tests__/__helpers__/mocks";
- *   mockAll();
+ * react-router-dom mocking lives in a SEPARATE file (mock-router.ts), not here.
+ * `vi.mock()` hoists to the top of whatever file it's written in, even nested
+ * inside a function — so it must not live in this file, or importing mockTds
+ * alone would silently mock react-router-dom for every consumer. Test files
+ * that want a real, unmocked router (e.g. to verify navigate()↔Route wiring)
+ * must be able to import mockTds/mockAppsInToss without that side effect.
+ * If you need router mocking, import mockRouter/mockNavigate/mockLocation from
+ * "@/__tests__/__helpers__/mock-router" instead.
  */
 
 import React from "react";
 import { vi } from "vitest";
-
-export const mockNavigate = vi.fn();
-export const mockLocation = { pathname: "/", search: "", state: null, key: "default" };
 
 // ── TDS (@toss/tds-mobile) ──
 // TDS components use CSS-in-JS + layout hooks that crash in jsdom.
@@ -302,25 +303,10 @@ export function mockTossRewardAd() {
   }));
 }
 
-// ── react-router-dom ──
-// Preserve actual router + override useNavigate for assertion.
-export function mockRouter() {
-  vi.mock("react-router-dom", async () => {
-    const actual = await vi.importActual<typeof import("react-router-dom")>(
-      "react-router-dom",
-    );
-    return {
-      ...actual,
-      useNavigate: () => mockNavigate,
-      useLocation: () => mockLocation,
-    };
-  });
-}
-
-// ── Convenience: mock everything ──
+// ── Convenience: mock everything except the router ──
+// See the file header for why react-router-dom mocking can't safely live here.
 export function mockAll() {
   mockTds();
   mockAppsInToss();
   mockTossRewardAd();
-  mockRouter();
 }

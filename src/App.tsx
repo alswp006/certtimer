@@ -8,12 +8,18 @@ import CheckinDone from './pages/CheckinDone';
 import { AppDataProvider } from '@/lib/store';
 import { ScreenScaffold } from '@/components/ScreenScaffold';
 import { EmptyState } from '@/components/StateView';
+import { FloatingTabBar } from '@/components/FloatingTabBar';
+import { TAB_ITEMS } from '@/components/tabItems';
 
-// 아직 구현되지 않은 화면(리포트/퀴즈) — 후속 패킷에서 실제 페이지로 교체될 때까지
+// 아직 구현되지 않은 화면(리포트/퀴즈/오답노트) — 후속 패킷에서 실제 페이지로 교체될 때까지
 // 빈 화면 대신 안내만 보여줘 네비게이션이 끊기지 않게 한다.
-function ComingSoon({ title }: { title: string }) {
+// tabRoot: 홈/퀴즈/리포트처럼 하단 탭이 있는 화면인지 여부(오답노트는 퀴즈에서 진입하는 push 플로우라 탭바 없음).
+function ComingSoon({ title, tabRoot }: { title: string; tabRoot?: boolean }) {
   return (
-    <ScreenScaffold top={<Top title={<Top.TitleParagraph>{title}</Top.TitleParagraph>} />}>
+    <ScreenScaffold
+      top={<Top title={<Top.TitleParagraph>{title}</Top.TitleParagraph>} />}
+      bottom={tabRoot ? <FloatingTabBar items={TAB_ITEMS} /> : undefined}
+    >
       <EmptyState title="준비 중이에요" description="곧 만나볼 수 있어요" />
     </ScreenScaffold>
   );
@@ -34,8 +40,9 @@ export default function App() {
         <Route path="/select" element={<Select />} />
         <Route path="/checkin" element={<Checkin />} />
         <Route path="/checkin/done" element={<CheckinDone />} />
-        <Route path="/report" element={<ComingSoon title="합격 예측 리포트" />} />
-        <Route path="/quiz" element={<ComingSoon title="오늘의 퀴즈" />} />
+        <Route path="/report" element={<ComingSoon title="합격 예측 리포트" tabRoot />} />
+        <Route path="/quiz" element={<ComingSoon title="오늘의 퀴즈" tabRoot />} />
+        <Route path="/wrong" element={<ComingSoon title="오답노트" />} />
         {DevTdsGallery && (
           <Route
             path="/__tds-gallery"
