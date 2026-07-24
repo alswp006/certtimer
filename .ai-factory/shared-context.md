@@ -136,6 +136,7 @@ export interface ScoreResult {
     BottomCTA.tsx
     Card.tsx
     CountUp.tsx
+    FloatingTabBar/
     FloatingTabBar.tsx
     MiniBar.tsx
     PageShell.tsx
@@ -145,6 +146,7 @@ export interface ScoreResult {
     SummaryHero.tsx
     TossPurchase.tsx
     TossRewardAd.tsx
+    __DebugTabBarNoSdk.tsx
     tabItems.ts
   data/
   hooks/
@@ -161,6 +163,8 @@ export interface ScoreResult {
     Checkin.tsx
     CheckinDone.tsx
     Home.tsx
+    Quiz.tsx
+    Report.tsx
     Select.tsx
     __TdsGallery.tsx
   store/
@@ -194,6 +198,7 @@ export interface ScoreResult {
 - SummaryHero.tsx: SummaryHero
 - TossPurchase.tsx: TossPurchase
 - TossRewardAd.tsx: TossRewardAd
+- __DebugTabBarNoSdk.tsx: DebugTabBarNoSdk
 
 ### Module Dependencies (import graph)
   lib/storage.ts → imports: lib/types
@@ -201,6 +206,8 @@ export interface ScoreResult {
   pages/Checkin.tsx → imports: components/ScreenScaffold, components/BottomCTA, components/Card, lib/store, lib/calc, lib/utils
   pages/CheckinDone.tsx → imports: components/ScreenScaffold, components/Card, components/Amount, components/AdSlot, lib/store, lib/utils
   pages/Home.tsx → imports: components/ScreenScaffold, components/SummaryHero, components/Card, components/CountUp, components/StateView, components/FloatingTabBar, components/tabItems, lib/store, lib/calc, lib/utils
+  pages/Quiz.tsx → imports: components/ScreenScaffold, components/Card, components/StateView, components/FloatingTabBar, components/tabItems, lib/store, lib/constants/quiz, lib/constants/certs, lib/calc, lib/utils, lib/types
+  pages/Report.tsx → imports: components/ScreenScaffold, components/SummaryHero, components/Card, components/CountUp, components/Sparkline, components/StateView, components/TossRewardAd, components/FloatingTabBar, components/tabItems, lib/store, lib/calc, lib/utils, lib/types
   pages/Select.tsx → imports: components/ScreenScaffold, components/BottomCTA, components/StateView, lib/store, lib/constants/certs, lib/calc, lib/utils, lib/types
 CRITICAL: Before creating any new function, type, or component, check the list above. If something similar exists, import and use it.
 
@@ -210,4 +217,5 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0003: 상태 관리 스토어 (useAppData 훅/컨텍스트) (files: src/lib/store.tsx)
 - 0004: 상수 데이터 (내장 시험 50종 + 퀴즈 뱅크) (files: src/lib/constants/certs.ts, src/lib/constants/quiz.ts)
 - 0005: 순수 계산 함수 (D-day/목표/진행률/점수/스트릭/퀴즈 시드) (files: src/lib/calc.ts)
+- heal-1-01: 앱 셸·라우팅·Provider 최소 골격 확립(빌드 통과 우선) (files: src/App.tsx, src/main.tsx, src/routes.tsx, src/components/FloatingTabBar/index.tsx)
 - heal-1-02: 공유 계약 export 표면 정합화(페이지 소비 지점 고정) (files: src/types/index.ts, src/store/useAppData.ts, src/lib/storage.ts, src/lib/calc.ts, src/data/index.ts)
