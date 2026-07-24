@@ -28,18 +28,30 @@ class RouteErrorBoundary extends Component<{ children: ReactNode }, RouteErrorBo
 
   render() {
     if (this.state.hasError) {
-      return (
-        <ScreenScaffold top={<Top title={<Top.TitleParagraph>문제가 발생했어요</Top.TitleParagraph>} />}>
-          <EmptyState
-            testId="route-error-fallback"
-            title="화면을 불러오지 못했어요"
-            description="잠시 후 다시 시도해 주세요"
-          />
-        </ScreenScaffold>
-      );
+      return <RouteErrorFallback />;
     }
     return this.props.children;
   }
+}
+
+// 클래스 boundary 안에서는 useNavigate를 쓸 수 없어 복구 액션을 별도 함수 컴포넌트로 분리한다.
+// '/select'는 가드 대상이 아니므로 온보딩 상태와 무관하게 항상 안전한 복귀 지점이다.
+function RouteErrorFallback() {
+  const navigate = useNavigate();
+  return (
+    <ScreenScaffold top={<Top title={<Top.TitleParagraph>문제가 발생했어요</Top.TitleParagraph>} />}>
+      <EmptyState
+        testId="route-error-fallback"
+        title="화면을 불러오지 못했어요"
+        description="잠시 후 다시 시도해 주세요"
+        action={
+          <Button variant="weak" display="block" onClick={() => navigate('/select', { replace: true })}>
+            처음으로
+          </Button>
+        }
+      />
+    </ScreenScaffold>
+  );
 }
 
 function withBoundary(children: ReactNode) {

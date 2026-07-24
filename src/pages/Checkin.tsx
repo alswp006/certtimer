@@ -50,8 +50,18 @@ export default function Checkin() {
           ? updateStreak({ current: streak.current, best: streak.longest }, streak.lastCheckInDate, today).current
           : 1;
 
-    upsertCheckInToday(minutes, method);
-    applyStreak();
+    const checkInResult = upsertCheckInToday(minutes, method);
+    const streakResult = applyStreak();
+
+    if (!checkInResult.ok || !streakResult.ok) {
+      setError('저장 공간이 부족해요. 기기 저장공간을 확인해 주세요');
+      try {
+        toast.openToast('저장에 실패했어요. 저장 공간을 확인해 주세요');
+      } catch {
+        /* WebView 밖에서는 throw될 수 있음 — 무시 */
+      }
+      return;
+    }
 
     try {
       toast.openToast(`${minutes}분 기록 완료!`);
@@ -130,6 +140,13 @@ export default function Checkin() {
           <Paragraph.Text typography="t2">{formatElapsed(elapsedSec)}</Paragraph.Text>
         </Card>
       )}
+
+      {mode === 'stopwatch' && error ? (
+        <>
+          <Spacing size={8} />
+          <Paragraph.Text typography="st13">{error}</Paragraph.Text>
+        </>
+      ) : null}
 
       <Spacing size={16} />
 

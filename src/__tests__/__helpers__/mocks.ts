@@ -123,6 +123,15 @@ export function mockTds() {
         ),
     ),
 
+    SearchField: React.forwardRef(({ onDeleteClick, ...props }: any, ref: any) =>
+      React.createElement(
+        "div",
+        null,
+        React.createElement("input", { ref, type: "search", ...props }),
+        onDeleteClick && React.createElement("button", { onClick: onDeleteClick, "aria-label": "지우기" }),
+      ),
+    ),
+
     Top: Object.assign(
       ({ children, title }: any) =>
         // NOTE: `title`은 보통 이미 <Top.TitleParagraph>(h1)로 감싸져 전달된다 —

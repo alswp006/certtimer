@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Top, TextField, SearchField, ListRow, Button, BottomSheet, Spacing, Paragraph, Badge } from '@toss/tds-mobile';
+import { Top, TextField, SearchField, ListRow, Button, BottomSheet, Spacing, Paragraph, Badge, useToast } from '@toss/tds-mobile';
 import { useNavigate } from 'react-router-dom';
 import { ScreenScaffold } from '@/components/ScreenScaffold';
 import { SubmitFooter } from '@/components/BottomCTA';
@@ -12,6 +12,7 @@ import type { UserCert } from '@/lib/types';
 
 export default function Select() {
   const navigate = useNavigate();
+  const toast = useToast();
   const { setUserCert, setFlags } = useAppData();
   const [search, setSearch] = useState('');
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -25,8 +26,17 @@ export default function Select() {
   const filtered = query ? BUILTIN_CERTS.filter((c) => c.name.includes(query)) : BUILTIN_CERTS;
 
   function commitSelection(cert: UserCert) {
-    setUserCert(cert);
-    setFlags({ onboarded: true });
+    const certResult = setUserCert(cert);
+    const flagsResult = setFlags({ onboarded: true });
+    if (!certResult.ok || !flagsResult.ok) {
+      setError('저장 공간이 부족해요. 기기 저장공간을 확인해 주세요');
+      try {
+        toast.openToast('저장에 실패했어요. 저장 공간을 확인해 주세요');
+      } catch {
+        /* WebView 밖에서는 throw될 수 있음 — 무시 */
+      }
+      return;
+    }
     navigate('/', { replace: true });
   }
 
