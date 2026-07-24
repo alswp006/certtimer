@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { UserCert, CheckIn, StreakState, QuizProgress, AppFlags } from '@/lib/types';
+import { updateStreak } from './calc.ts';
+import { todayStr } from './utils.ts';
 import {
   getUserCert,
   saveUserCert,
@@ -27,15 +29,14 @@ interface AppDataValue {
   upsertCheckInToday: (minutes: number, method: CheckIn['method']) => MutationResult;
   applyStreak: () => MutationResult;
   addWrongId: (id: string) => MutationResult;
+  answerQuizQuestion: (id: string, correct: boolean) => MutationResult;
   setUserCert: (cert: UserCert) => MutationResult;
   setFlags: (partial: Partial<Omit<AppFlags, '_v'>>) => MutationResult;
 }
 
 const AppDataContext = createContext<AppDataValue | null>(null);
 
-function todayStr(): string {
-  return new Date().toISOString().slice(0, 10);
-}
+const MAX_WRONG_IDS = 500;
 
 export function AppDataProvider({ children }: { children: ReactNode }) {
   const [userCert, setUserCertState] = useState<UserCert | null>(() => getUserCert());
@@ -63,10 +64,12 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     if (streak.lastCheckInDate === date) {
       return { ok: true };
     }
-    const current = streak.current + 1;
+    const result = streak.lastCheckInDate
+      ? updateStreak({ current: streak.current, best: streak.longest }, streak.lastCheckInDate, date)
+      : { current: 1, best: Math.max(streak.longest, 1) };
     const next: StreakState = {
-      current,
-      longest: Math.max(streak.longest, current),
+      current: result.current,
+      longest: result.best,
       lastCheckInDate: date,
       _v: 1,
     };
@@ -81,6 +84,21 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
         ? { ...quiz, wrongIds: quiz.wrongIds.includes(id) ? quiz.wrongIds : [...quiz.wrongIds, id] }
         : { date, answeredIds: [], wrongIds: [id], _v: 1 };
 
+    setQuiz(next);
+    return { ok: saveQuizProgress(next) };
+  }
+
+  // 정답 처리 + 오답 저장을 한 번의 setState로 원자 처리(연속 호출 시 stale closure로 인한 유실 방지).
+  function answerQuizQuestion(id: string, correct: boolean): MutationResult {
+    const date = todayStr();
+    const base: QuizProgress =
+      quiz && quiz.date === date ? quiz : { date, answeredIds: [], wrongIds: quiz?.wrongIds ?? [], _v: 1 };
+    const answeredIds = base.answeredIds.includes(id) ? base.answeredIds : [...base.answeredIds, id];
+    let wrongIds = base.wrongIds;
+    if (!correct && !wrongIds.includes(id)) {
+      wrongIds = wrongIds.length >= MAX_WRONG_IDS ? [...wrongIds.slice(1), id] : [...wrongIds, id];
+    }
+    const next: QuizProgress = { date, answeredIds, wrongIds, _v: 1 };
     setQuiz(next);
     return { ok: saveQuizProgress(next) };
   }
@@ -105,6 +123,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     upsertCheckInToday,
     applyStreak,
     addWrongId,
+    answerQuizQuestion,
     setUserCert,
     setFlags,
   };

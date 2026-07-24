@@ -1,7 +1,23 @@
 import { Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import { Top } from '@toss/tds-mobile';
 import Home from './pages/Home';
+import Select from './pages/Select';
+import Checkin from './pages/Checkin';
+import CheckinDone from './pages/CheckinDone';
 import { AppDataProvider } from '@/lib/store';
+import { ScreenScaffold } from '@/components/ScreenScaffold';
+import { EmptyState } from '@/components/StateView';
+
+// 아직 구현되지 않은 화면(리포트/퀴즈) — 후속 패킷에서 실제 페이지로 교체될 때까지
+// 빈 화면 대신 안내만 보여줘 네비게이션이 끊기지 않게 한다.
+function ComingSoon({ title }: { title: string }) {
+  return (
+    <ScreenScaffold top={<Top title={<Top.TitleParagraph>{title}</Top.TitleParagraph>} />}>
+      <EmptyState title="준비 중이에요" description="곧 만나볼 수 있어요" />
+    </ScreenScaffold>
+  );
+}
 
 // Dev-only TDS Gallery route — `import.meta.env.DEV` is statically replaced
 // (true in dev, false in prod) so the entire import + Route is tree-shaken
@@ -15,6 +31,11 @@ export default function App() {
     <AppDataProvider>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/select" element={<Select />} />
+        <Route path="/checkin" element={<Checkin />} />
+        <Route path="/checkin/done" element={<CheckinDone />} />
+        <Route path="/report" element={<ComingSoon title="합격 예측 리포트" />} />
+        <Route path="/quiz" element={<ComingSoon title="오늘의 퀴즈" />} />
         {DevTdsGallery && (
           <Route
             path="/__tds-gallery"

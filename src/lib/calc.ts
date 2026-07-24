@@ -26,6 +26,11 @@ export function calcDday(targetDate: string, today: string): string {
   return `D+${-diff}`;
 }
 
+// 시험일까지 남은 일수(음수 가능 — 시험일 경과 판정용). D-day 표시와 동일한 diffDays 기준.
+export function daysUntil(targetDate: string, today: string): number {
+  return diffDays(today, targetDate);
+}
+
 export function calcDailyGoal(
   targetAmount: number,
   current: number,
