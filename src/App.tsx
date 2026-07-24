@@ -15,9 +15,7 @@ import { EmptyState } from '@/components/StateView';
 import { FloatingTabBar } from '@/components/FloatingTabBar';
 import { TAB_ITEMS } from '@/components/tabItems';
 
-// 온보딩(자격증 선택) 전에는 의미가 없는 push-flow 화면만 감싼다.
-// Home("/")·Quiz("/quiz")·Report("/report")는 탭-루트 화면으로 자체 EmptyState/폴백을
-// 이미 제공하므로 감싸지 않는다(가드가 덮으면 그 폴백 UX와 탭바가 사라진다).
+// 온보딩(자격증 선택) 전에는 의미가 없는 모든 보호 라우트를 감싼다.
 // Select("/select")는 가드의 리다이렉트 목적지 자신이라 감싸면 안 된다.
 function guarded(children: ReactNode) {
   return <OnboardingGuard>{children}</OnboardingGuard>;
@@ -48,12 +46,12 @@ export default function App() {
   return (
     <AppDataProvider>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={guarded(<Home />)} />
         <Route path="/select" element={<Select />} />
         <Route path="/checkin" element={guarded(<Checkin />)} />
         <Route path="/checkin/done" element={guarded(<CheckinDone />)} />
-        <Route path="/report" element={<Report />} />
-        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/report" element={guarded(<Report />)} />
+        <Route path="/quiz" element={guarded(<Quiz />)} />
         <Route path="/wrong" element={guarded(<ComingSoon title="오답노트" />)} />
         {DevTdsGallery && (
           <Route

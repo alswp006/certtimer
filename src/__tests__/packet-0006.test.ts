@@ -217,8 +217,8 @@ describe('AC-4: Routing contracts are aligned', () => {
       'utf-8'
     );
 
-    // Home navigates to /select, /checkin, /report
-    expect(homeSource).toContain("navigate('/select'");
+    // heal-2-01: Home no longer navigates to /select itself — the router-level
+    // OnboardingGuard owns that redirect now. Home still navigates to /checkin, /report.
     expect(homeSource).toContain("navigate('/checkin'");
     expect(homeSource).toContain("navigate('/report'");
 
@@ -285,14 +285,15 @@ describe('AC-5: RouteState type definitions align with usage', () => {
     expect(checkinSource).toContain('state: { minutesToday, streakCurrent }');
   });
 
-  it('Home.tsx navigate to /select should pass mode state', () => {
-    const homeSource = require('fs').readFileSync(
-      require('path').resolve(__dirname, '../pages/Home.tsx'),
+  it('OnboardingGuard navigate to /select should pass mode state', () => {
+    // heal-2-01: the mode:'onboard' redirect state now lives in the central router
+    // guard (src/lib/guard.tsx), not in Home.tsx.
+    const guardSource = require('fs').readFileSync(
+      require('path').resolve(__dirname, '../lib/guard.tsx'),
       'utf-8'
     );
 
-    // Verify navigate call includes state with mode
-    expect(homeSource).toContain("{ state: { mode: 'onboard' }");
+    expect(guardSource).toContain("{ state: { mode: 'onboard' }");
   });
 });
 
@@ -340,8 +341,9 @@ describe('AC-7: App.tsx has all required route definitions', () => {
       'utf-8'
     );
 
+    // heal-2-01: "/" is now a protected route wrapped by the central OnboardingGuard.
     expect(appSource).toContain("path=\"/\"");
-    expect(appSource).toContain('element={<Home />}');
+    expect(appSource).toContain('element={guarded(<Home />)}');
   });
 
   it('should have placeholder or real Route definitions for /select, /checkin, /checkin/done, /report, /quiz', () => {

@@ -36,13 +36,15 @@ const ADVICE_TEXT: Record<CalcScoreLabel, string> = {
   합격유력: '이 페이스면 합격권이에요, 마무리까지 힘내요',
 };
 
+// 온보딩 완료 여부는 라우터 최상위 OnboardingGuard가 보장한다("/report"는 보호 라우트) — 이 화면은
+// userCert가 항상 존재한다고 가정하고, 체크인 0건일 때의 빈 상태만 자체적으로 처리한다.
 export default function Report() {
   const navigate = useNavigate();
   const { userCert, checkIns } = useAppData();
 
   const top = <Top title={<Top.TitleParagraph>합격 예측 리포트</Top.TitleParagraph>} />;
 
-  if (!userCert || checkIns.length === 0) {
+  if (checkIns.length === 0) {
     return (
       <ScreenScaffold top={top} bottom={<FloatingTabBar items={TAB_ITEMS} />}>
         <EmptyState
@@ -65,7 +67,7 @@ export default function Report() {
         description="광고 시청 후 리포트가 공개돼요"
         buttonText="광고 보고 리포트 공개"
       >
-        <ReportContent userCert={userCert} checkIns={checkIns} />
+        <ReportContent userCert={userCert!} checkIns={checkIns} />
       </TossRewardAd>
     </ScreenScaffold>
   );

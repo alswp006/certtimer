@@ -4,7 +4,6 @@ import { ScreenScaffold } from '@/components/ScreenScaffold';
 import { SummaryHero } from '@/components/SummaryHero';
 import { Card } from '@/components/Card';
 import { CountUp } from '@/components/CountUp';
-import { EmptyState } from '@/components/StateView';
 import { AdPlacement } from '@/components/AdPlacement';
 import { FloatingTabBar } from '@/components/FloatingTabBar';
 import { TAB_ITEMS } from '@/components/tabItems';
@@ -12,8 +11,9 @@ import { useAppData } from '@/lib/store';
 import { calcDday, calcProgress, calcDailyGoal, daysUntil } from '@/lib/calc';
 import { formatNumber, todayStr } from '@/lib/utils';
 
+// 온보딩 완료 여부는 라우터 최상위 OnboardingGuard가 보장한다("/"는 보호 라우트) — 이 화면은
+// userCert가 항상 존재한다고 가정하고 그린다.
 export default function Home() {
-  const navigate = useNavigate();
   const { userCert, checkIns } = useAppData();
 
   return (
@@ -21,20 +21,12 @@ export default function Home() {
       top={<Top title={<Top.TitleParagraph>CertTimer</Top.TitleParagraph>} />}
       bottom={<FloatingTabBar items={TAB_ITEMS} />}
     >
-      {!userCert ? (
-        <EmptyState
-          title="학습할 자격증을 선택해주세요"
-          description="D-day와 오늘 목표 학습량을 계산해드려요"
-          action={
-            <Button variant="weak" display="block" onClick={() => navigate('/select', { state: { mode: 'onboard' } })}>
-              자격증 선택
-            </Button>
-          }
-          testId="home-empty"
-        />
-      ) : (
-        <HomeDashboard userCertName={userCert.name} examDate={userCert.examDate} targetTotalMinutes={userCert.targetTotalMinutes} totalMinutes={checkIns.reduce((sum, c) => sum + c.minutes, 0)} />
-      )}
+      <HomeDashboard
+        userCertName={userCert!.name}
+        examDate={userCert!.examDate}
+        targetTotalMinutes={userCert!.targetTotalMinutes}
+        totalMinutes={checkIns.reduce((sum, c) => sum + c.minutes, 0)}
+      />
     </ScreenScaffold>
   );
 }
