@@ -5,6 +5,7 @@ import { SummaryHero } from '@/components/SummaryHero';
 import { Card } from '@/components/Card';
 import { CountUp } from '@/components/CountUp';
 import { EmptyState } from '@/components/StateView';
+import { AdPlacement } from '@/components/AdPlacement';
 import { FloatingTabBar } from '@/components/FloatingTabBar';
 import { TAB_ITEMS } from '@/components/tabItems';
 import { useAppData } from '@/lib/store';
@@ -96,6 +97,8 @@ function HomeDashboard({
           합격 예측 리포트 보기
         </Button>
       </Card>
+
+      <AdPlacement testId="home-ad-placement" adGroupId={import.meta.env.VITE_TOSS_AD_GROUP_ID} />
 
       <Spacing size={80} />
     </>

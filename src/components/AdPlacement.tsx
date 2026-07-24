@@ -1,7 +1,15 @@
+import { Spacing } from '@toss/tds-mobile';
+import { AdSlot } from '@/components/AdSlot';
+
 /**
- * Scaffold only — packet 0015 TDD red phase.
- * Real Home/Report integration is the Coder's job (see src/__tests__/packet-0015.test.ts).
+ * 결과/콘텐츠 뒤에 붙는 비침투 배너 광고 섹션 — 카드 내부에 중첩하지 말고
+ * 마지막 결과 카드 다음에 형제 요소로 배치한다.
  */
-export function AdPlacement({ adGroupId: _adGroupId, testId: _testId }: { adGroupId: string; testId?: string }) {
-  return null;
+export function AdPlacement({ adGroupId, testId }: { adGroupId: string; testId?: string }) {
+  return (
+    <div data-testid={testId}>
+      <Spacing size={16} />
+      <AdSlot adGroupId={adGroupId} />
+    </div>
+  );
 }

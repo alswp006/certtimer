@@ -7,6 +7,7 @@ import { CountUp } from '@/components/CountUp';
 import { Sparkline } from '@/components/Sparkline';
 import { EmptyState } from '@/components/StateView';
 import { TossRewardAd } from '@/components/TossRewardAd';
+import { AdPlacement } from '@/components/AdPlacement';
 import { FloatingTabBar } from '@/components/FloatingTabBar';
 import { TAB_ITEMS } from '@/components/tabItems';
 import { useAppData } from '@/lib/store';
@@ -109,6 +110,8 @@ function ReportContent({ userCert, checkIns }: { userCert: UserCert; checkIns: C
       <Paragraph.Text typography="st11">최근 7일 학습 추이</Paragraph.Text>
       <Spacing size={8} />
       <Sparkline testId="report-sparkline" data={sparklineData} />
+
+      <AdPlacement testId="report-ad-placement" adGroupId={import.meta.env.VITE_TOSS_AD_GROUP_ID} />
 
       <Spacing size={80} />
     </>
