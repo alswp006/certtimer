@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Top, TextField, ListRow, Button, BottomSheet, Spacing, Paragraph, Badge } from '@toss/tds-mobile';
+import { Top, TextField, SearchField, ListRow, Button, BottomSheet, Spacing, Paragraph, Badge } from '@toss/tds-mobile';
 import { useNavigate } from 'react-router-dom';
 import { ScreenScaffold } from '@/components/ScreenScaffold';
 import { SubmitFooter } from '@/components/BottomCTA';
@@ -67,11 +67,11 @@ export default function Select() {
       top={<Top title={<Top.TitleParagraph>학습할 자격증 선택</Top.TitleParagraph>} />}
       bottom={<SubmitFooter label="직접 등록" onClick={() => setSheetOpen(true)} />}
     >
-      <TextField
-        variant="line"
+      <SearchField
         placeholder="자격증 이름으로 검색"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        onDeleteClick={() => setSearch('')}
       />
       <Spacing size={16} />
 

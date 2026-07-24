@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { lazy, Suspense, Component } from 'react';
-import { Top } from '@toss/tds-mobile';
+import { Top, Button } from '@toss/tds-mobile';
 import Home from './pages/Home';
 import Select from './pages/Select';
 import Checkin from './pages/Checkin';
@@ -66,6 +66,26 @@ function ComingSoon({ title, tabRoot }: { title: string; tabRoot?: boolean }) {
   );
 }
 
+// 매칭되는 라우트가 없을 때(오타 딥링크, 구버전 링크 등) 흰 화면 대신 보여줄 안내.
+// react-router는 매치 실패 시 아무것도 렌더하지 않으므로 이 catch-all이 없으면 #root가 비어 흰 화면이 된다.
+function NotFound() {
+  const navigate = useNavigate();
+  return (
+    <ScreenScaffold top={<Top title={<Top.TitleParagraph>페이지를 찾을 수 없어요</Top.TitleParagraph>} />}>
+      <EmptyState
+        testId="not-found"
+        title="페이지를 찾을 수 없어요"
+        description="주소가 변경되었거나 잘못된 경로예요"
+        action={
+          <Button variant="weak" display="block" onClick={() => navigate('/', { replace: true })}>
+            홈으로
+          </Button>
+        }
+      />
+    </ScreenScaffold>
+  );
+}
+
 // Dev-only TDS Gallery route — `import.meta.env.DEV` is statically replaced
 // (true in dev, false in prod) so the entire import + Route is tree-shaken
 // from production builds. Verify with: `grep -r "TdsGallery" dist/` → empty.
@@ -94,6 +114,7 @@ export default function App() {
             }
           />
         )}
+        <Route path="*" element={withBoundary(<NotFound />)} />
       </Routes>
     </AppDataProvider>
   );
