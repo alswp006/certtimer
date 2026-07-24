@@ -125,12 +125,9 @@ export function mockTds() {
 
     Top: Object.assign(
       ({ children, title }: any) =>
-        React.createElement(
-          "nav",
-          { role: "navigation" },
-          title && React.createElement("h1", null, title),
-          children,
-        ),
+        // NOTE: `title`은 보통 이미 <Top.TitleParagraph>(h1)로 감싸져 전달된다 —
+        // 여기서 또 h1로 감싸면 h1 > h1 중첩(잘못된 DOM 중첩 경고 → console.error)이 발생한다.
+        React.createElement("nav", { role: "navigation" }, title, children),
       {
         TitleParagraph: ({ children }: any) => React.createElement("h1", null, children),
       },

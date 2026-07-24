@@ -220,3 +220,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - heal-1-01: 앱 셸·라우팅·Provider 최소 골격 확립(빌드 통과 우선) (files: src/App.tsx, src/main.tsx, src/routes.tsx, src/components/FloatingTabBar/index.tsx)
 - heal-1-02: 공유 계약 export 표면 정합화(페이지 소비 지점 고정) (files: src/types/index.ts, src/store/useAppData.ts, src/lib/storage.ts, src/lib/calc.ts, src/data/index.ts)
 - 0015: 온보딩 가드 · 광고 배치 · 검수 가드 폴리시 (files: src/lib/guard.tsx, src/components/AdPlacement.tsx)
+- heal-2-01: 온보딩 가드를 라우터 단일 지점으로 통합하고 충돌 테스트 정합화 (files: src/App.tsx, src/routes/RequireOnboarding.tsx, src/routes/index.tsx, src/pages/*/index.tsx, test/packet-0014.test.tsx, test/packet-0016.test.tsx, test/packet-heal-1-01.test.tsx)

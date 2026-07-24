@@ -115,7 +115,10 @@ describe('머지된 공유계약 위에 라우팅·Provider 증분 와이어링 
 
       cleanup();
       renderAt('/checkin');
-      expect(screen.queryAllByRole('tab')).toHaveLength(0);
+      // /checkin은 TDS Tab(수동 입력/스탑워치 모드 전환)을 화면 내부에서 쓰므로 role="tab"
+      // 자체는 존재할 수 있다(heal-1-01에서 이미 같은 이유로 랜드마크 기반 검증으로 정착됨).
+      // FloatingTabBar 고유의 "메인 네비게이션" 랜드마크 부재로 하단 탭바 미표시를 검증한다.
+      expect(screen.queryByRole('tablist', { name: '메인 네비게이션' })).toBeNull();
     });
   });
 
