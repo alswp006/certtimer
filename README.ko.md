@@ -1,4 +1,4 @@
-🇺🇸 [한국어](./README.ko.md)
+🇰🇷 [English](./README.md)
 
 # certtimer
 자격증 시험 D-day·학습 진도 트래커 — 매일 체크인하면 배너 광고, 합격 예측 리포트는 리워드 광고 후 공개
