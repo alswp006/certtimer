@@ -17,11 +17,15 @@
 
 /**
  * Certification metadata — available exams user can select
+ * examDate/recommendedTotalMinutes/isBuiltIn are populated for built-in presets (see src/lib/constants/certs.ts)
  */
 export interface Certification {
   id: string;
   name: string;
   category: string;
+  examDate?: string; // ISO "YYYY-MM-DD"
+  recommendedTotalMinutes?: number; // 권장 총 학습시간(분), >= 60
+  isBuiltIn?: boolean;
   _v: 1;
 }
 
@@ -80,6 +84,18 @@ export interface AppFlags {
   _v: 1;
 }
 
+/**
+ * QuizQuestion — static quiz bank content (bundled code constant, not persisted directly)
+ */
+export interface QuizQuestion {
+  id: string;
+  type: 'ox' | 'mcq';
+  question: string;
+  answer: boolean | string; // ox: boolean, mcq: correct option string
+  explanation: string;
+  options?: string[]; // required for type: 'mcq'
+}
+
 // ============================================================================
 // Calculation Types
 // ============================================================================
@@ -107,27 +123,7 @@ export interface ScoreResult {
 }
 
 // ============================================================================
-// Navigation Types — RouteState discriminated unions
-// ============================================================================
-
-/**
- * RouteState — typed navigation contracts per path
- *
- * Each route has a specific state shape:
- * - /checkin/done: { minutesToday, streakCurrent }
- * - /select: { mode: 'onboard' | 'change' }
- * - /, /checkin, /report, /quiz: no navigation state required
- */
-export type RouteState =
-  | {
-      pathname: '/checkin/done';
-      state: {
-        minutesToday: number;
-        streakCurrent: number;
-      };
-    }
-  | {
-      pathname: '/s
+// Naviga
 // ...truncated
 ```
 
@@ -151,6 +147,7 @@ export type RouteState =
     TossRewardAd.tsx
   hooks/
   lib/
+    constants/
     storage.ts
     types.ts
     utils.ts
@@ -165,8 +162,10 @@ export type RouteState =
   vite-env.d.ts
 
 ### Exports (src/lib/)
-- storage.ts: export function getItem<T>(key: string): T | null; export function setItem<T>(key: string, value: T): void; export function removeItem(key: string): void
-- types.ts: export interface Certification; export interface UserCert; export interface CheckIn; export interface StreakState; export interface QuizProgress; export interface AppFlags; export type ScoreLabel = '분발 필요' | '순항 중' | '합격 유력'; export interface DailyGoal
+- constants/certs.ts: export const BUILTIN_CERTS: Certification[] = [ // IT
+- constants/quiz.ts: export const QUIZ_BANK: Record<string, QuizQuestion[]> = withFallback(RAW_QUIZ_BANK)
+- storage.ts: export function getItem<T>(key: string): T | null; export function setItem<T>(key: string, value: T): void; export function removeItem(key: string): void; export function getUserCert(): UserCert | null; export function saveUserCert(cert: UserCert): boolean; export function getCheckIns(): CheckIn[]; export function saveCheckIns(checkIns: CheckIn[]): boolean; export function getStreak(): StreakState
+- types.ts: export interface Certification; export interface UserCert; export interface CheckIn; export interface StreakState; export interface QuizProgress; export interface AppFlags; export interface QuizQuestion; export type ScoreLabel = '분발 필요' | '순항 중' | '합격 유력'
 - utils.ts: export function cn(...classes: (string | boolean | undefined | null)[]): string; export function formatNumber(n: number): string; export function formatCurrency(n: number, currency = 'KRW'): string
 
 ### Components (src/components/)
@@ -184,8 +183,12 @@ export type RouteState =
 - SummaryHero.tsx: SummaryHero
 - TossPurchase.tsx: TossPurchase
 - TossRewardAd.tsx: TossRewardAd
+
+### Module Dependencies (import graph)
+  lib/storage.ts → imports: lib/types
 CRITICAL: Before creating any new function, type, or component, check the list above. If something similar exists, import and use it.
 
 ## Already Implemented (do NOT duplicate or overwrite)
 - 0001: TypeScript 타입 정의 + RouteState 계약 (files: src/lib/types.ts)
 - 0002: localStorage 저장소 헬퍼 (CRUD + 안전 처리) (files: src/lib/storage.ts)
+- 0004: 상수 데이터 (내장 시험 50종 + 퀴즈 뱅크) (files: src/lib/constants/certs.ts, src/lib/constants/quiz.ts)
