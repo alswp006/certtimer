@@ -192,3 +192,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0001: TypeScript 타입 정의 + RouteState 계약 (files: src/lib/types.ts)
 - 0002: localStorage 저장소 헬퍼 (CRUD + 안전 처리) (files: src/lib/storage.ts)
 - 0004: 상수 데이터 (내장 시험 50종 + 퀴즈 뱅크) (files: src/lib/constants/certs.ts, src/lib/constants/quiz.ts)
+- 0003: 상태 관리 스토어 (useAppData 훅/컨텍스트) (files: src/lib/store.tsx)
