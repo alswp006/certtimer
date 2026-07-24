@@ -140,6 +140,9 @@ export function mockTds() {
     BottomCTA: ({ children }: any) =>
       React.createElement("div", { "data-slot": "bottom-cta" }, children),
 
+    FixedBottomCTA: ({ children, onClick, disabled }: any) =>
+      React.createElement("button", { onClick, disabled, "data-slot": "fixed-bottom-cta" }, children),
+
     BottomSheet: Object.assign(
       ({ children, open }: any) =>
         open ? React.createElement("div", { role: "dialog" }, children) : null,
@@ -155,6 +158,10 @@ export function mockTds() {
 
     Switch: ({ checked, onChange }: any) =>
       React.createElement("input", { type: "checkbox", checked, onChange, role: "switch" }),
+
+    useToast: () => ({ openToast: vi.fn() }),
+    useDialog: () => ({ open: vi.fn(), close: vi.fn() }),
+    useBottomSheet: () => ({ open: vi.fn(), close: vi.fn() }),
   }));
 }
 

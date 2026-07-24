@@ -146,6 +146,7 @@ export interface ScoreResult {
     TossPurchase.tsx
     TossRewardAd.tsx
     tabItems.ts
+  data/
   hooks/
   lib/
     calc.ts
@@ -162,6 +163,7 @@ export interface ScoreResult {
     Home.tsx
     Select.tsx
     __TdsGallery.tsx
+  store/
   styles/
     globals.css
     reward-ad.css
@@ -208,3 +210,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0003: 상태 관리 스토어 (useAppData 훅/컨텍스트) (files: src/lib/store.tsx)
 - 0004: 상수 데이터 (내장 시험 50종 + 퀴즈 뱅크) (files: src/lib/constants/certs.ts, src/lib/constants/quiz.ts)
 - 0005: 순수 계산 함수 (D-day/목표/진행률/점수/스트릭/퀴즈 시드) (files: src/lib/calc.ts)
+- heal-1-02: 공유 계약 export 표면 정합화(페이지 소비 지점 고정) (files: src/types/index.ts, src/store/useAppData.ts, src/lib/storage.ts, src/lib/calc.ts, src/data/index.ts)
