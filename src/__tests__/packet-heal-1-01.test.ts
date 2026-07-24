@@ -32,6 +32,22 @@ afterEach(() => {
 // SPEC이 언급하는 라우트 전체 — 각 라우트가 등록돼 렌더되는지 확인할 때 사용.
 const SPEC_ROUTES = ["/", "/select", "/checkin", "/checkin/done", "/report", "/quiz", "/wrong"];
 
+// heal-2-01: "/"·"/quiz"·"/report"도 온보딩 가드로 감싸졌으므로, 탭-루트 콘텐츠를 보려면
+// 먼저 온보딩(userCert)을 완료한 상태로 시드해야 가드를 통과해 실제 화면이 렌더된다.
+function seedOnboarded() {
+  localStorage.setItem(
+    "certtimer.userCert",
+    JSON.stringify({
+      certId: "cert_sqld",
+      name: "SQLD",
+      examDate: "2027-01-01",
+      targetTotalMinutes: 3000,
+      selectedAt: 1750000000000,
+      _v: 1,
+    }),
+  );
+}
+
 function renderAppAt(path: string) {
   return render(
     React.createElement(MemoryRouter, { initialEntries: [path] }, React.createElement(App)),
@@ -59,15 +75,14 @@ describe("앱 셸·라우팅·Provider 최소 골격 확립(빌드 통과 우선
     }
   });
 
-  it("AC-2: navigate() 이동 대상 경로들이 실제 등록된 Route와 일치한다", () => {
-    // Home의 1차 진입 액션이 이동하는 경로(자격증 미선택 상태의 기본 경로)
+  it("AC-2: 미온보딩 상태에서 '/' 진입 시 온보딩 가드가 /select로 리다이렉트하여 라우트가 실제로 살아있음을 증명한다", () => {
+    // heal-2-01: Home은 더 이상 자체 "자격증 선택" CTA로 수동 이동시키지 않는다 — 라우터
+    // 최상위 온보딩 가드가 "/"를 보호 라우트로 감싸 진입 즉시 /select로 리다이렉트한다.
     renderAppAt("/");
-    const selectCta = screen.getByRole("button", { name: /자격증 선택/ });
-    fireEvent.click(selectCta);
-    // 이동 후 /select 라우트의 콘텐츠(검색 인풋)가 실제로 렌더되어야 라우트가 살아있다는 증거
     expect(screen.getByPlaceholderText("자격증 이름으로 검색").getAttribute("placeholder")).toBe(
       "자격증 이름으로 검색",
     );
+    expect(screen.queryByRole("button", { name: /자격증 선택/ })).toBeNull();
   });
 
   it("AC-3[P0]: AppDataProvider가 트리 최상위를 감싸 페이지 내부에서 useAppData 호출이 예외 없이 성립한다", () => {
@@ -84,6 +99,7 @@ describe("앱 셸·라우팅·Provider 최소 골격 확립(빌드 통과 우선
   });
 
   it("AC-4[P0]: 탭-루트 화면(/, /quiz, /report)에 FloatingTabBar가 마운트되고 홈/퀴즈/리포트 3개 탭을 노출한다", () => {
+    seedOnboarded();
     renderAppAt("/");
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(3);
@@ -91,6 +107,7 @@ describe("앱 셸·라우팅·Provider 최소 골격 확립(빌드 통과 우선
   });
 
   it("AC-4[P0]: 탭 클릭 시 해당 라우트로 실제 이동한다", () => {
+    seedOnboarded();
     renderAppAt("/");
     const quizTab = screen.getByRole("tab", { name: "퀴즈" });
     fireEvent.click(quizTab);

@@ -219,3 +219,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 - 0005: 순수 계산 함수 (D-day/목표/진행률/점수/스트릭/퀴즈 시드) (files: src/lib/calc.ts)
 - heal-1-01: 앱 셸·라우팅·Provider 최소 골격 확립(빌드 통과 우선) (files: src/App.tsx, src/main.tsx, src/routes.tsx, src/components/FloatingTabBar/index.tsx)
 - heal-1-02: 공유 계약 export 표면 정합화(페이지 소비 지점 고정) (files: src/types/index.ts, src/store/useAppData.ts, src/lib/storage.ts, src/lib/calc.ts, src/data/index.ts)
+- 0015: 온보딩 가드 · 광고 배치 · 검수 가드 폴리시 (files: src/lib/guard.tsx, src/components/AdPlacement.tsx)

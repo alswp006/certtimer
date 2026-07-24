@@ -107,12 +107,14 @@ describe('라우팅 와이어링 + Provider 연결 + 통합 폴리시', () => {
   });
 
   describe("AC-4[P0]: 앱이 '/' 경로에서 정상 렌더링된다", () => {
-    it('renders the empty state (no UserCert) at "/" without throwing', () => {
+    it('redirects to /select at "/" without throwing when onboarding is incomplete (central guard, no UserCert)', () => {
+      // heal-2-01: Home은 더 이상 자체 EmptyState를 그리지 않는다 — 라우터 최상위 온보딩
+      // 가드가 "/"를 보호 라우트로 감싸 자동으로 /select로 리다이렉트한다.
       renderAt('/');
-      expect(screen.getByTestId('home-empty').getAttribute('data-testid')).toBe('home-empty');
-      expect(screen.getByText('학습할 자격증을 선택해주세요').textContent).toBe(
-        '학습할 자격증을 선택해주세요',
+      expect(screen.getByPlaceholderText('자격증 이름으로 검색').getAttribute('placeholder')).toBe(
+        '자격증 이름으로 검색',
       );
+      expect(screen.queryByTestId('home-empty')).toBeNull();
     });
 
     it('renders the populated dashboard at "/" when a UserCert is already saved', () => {

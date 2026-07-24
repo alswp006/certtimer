@@ -77,7 +77,22 @@ describe('앱 셸 · 라우팅 · FloatingTabBar 연결', () => {
   });
 
   describe('AC-2[P0]: FloatingTabBar 활성 탭 · 하단 고정 safe-area', () => {
+    // heal-2-01: "/"·"/quiz"·"/report"도 온보딩 가드로 감싸졌으므로, 탭 콘텐츠를 보려면
+    // 먼저 온보딩(userCert)을 완료한 상태로 시드해야 가드를 통과해 탭-루트 화면이 렌더된다.
+    const SEEDED_CERT = {
+      certId: 'cert_sqld',
+      name: 'SQLD',
+      examDate: '2027-01-01',
+      targetTotalMinutes: 3000,
+      selectedAt: 1750000000000,
+      _v: 1,
+    };
+    function seedOnboarded() {
+      localStorage.setItem('certtimer.userCert', JSON.stringify(SEEDED_CERT));
+    }
+
     it('shows FloatingTabBar on / with 홈 tinted active and 퀴즈/리포트 inactive', () => {
+      seedOnboarded();
       renderAt('/');
       const tablist = screen.getByRole('tablist', { name: '메인 네비게이션' });
       expect(within(tablist).getByRole('tab', { name: '홈' }).getAttribute('aria-selected')).toBe('true');
@@ -86,6 +101,7 @@ describe('앱 셸 · 라우팅 · FloatingTabBar 연결', () => {
     });
 
     it('shows 퀴즈 active on /quiz and 리포트 active on /report', () => {
+      seedOnboarded();
       const first = renderAt('/quiz');
       const quizTablist = screen.getByRole('tablist', { name: '메인 네비게이션' });
       expect(within(quizTablist).getByRole('tab', { name: '퀴즈' }).getAttribute('aria-selected')).toBe('true');
@@ -98,6 +114,7 @@ describe('앱 셸 · 라우팅 · FloatingTabBar 연결', () => {
     });
 
     it('FloatingTabBar is fixed to the bottom with safe-area inset padding', () => {
+      seedOnboarded();
       renderAt('/');
       const tablist = screen.getByRole('tablist', { name: '메인 네비게이션' });
       expect(tablist.style.position).toBe('fixed');
@@ -105,6 +122,8 @@ describe('앱 셸 · 라우팅 · FloatingTabBar 연결', () => {
     });
 
     it('does not render FloatingTabBar on push-flow screens (/checkin, /select)', () => {
+      // 온보딩 미완료 상태 그대로 둔다 — /checkin은 가드에 의해 /select로 리다이렉트되고,
+      // /select 자체도 탭-루트가 아니므로 두 경우 모두 메인 네비게이션 탭바가 없어야 한다.
       const first = renderAt('/checkin');
       expect(screen.queryByRole('tablist', { name: '메인 네비게이션' })).toBeNull();
       first.unmount();
@@ -131,9 +150,22 @@ describe('앱 셸 · 라우팅 · FloatingTabBar 연결', () => {
     });
 
     it('pages consuming useAppData render live data without a missing-provider error', () => {
+      // heal-2-01: "/"는 온보딩 가드 뒤에 있으므로, Home이 실제로 useAppData의 live 데이터를
+      // 그리는지 보려면 온보딩을 완료한 상태로 시드해 가드를 통과시켜야 한다.
+      localStorage.setItem(
+        'certtimer.userCert',
+        JSON.stringify({
+          certId: 'cert_sqld',
+          name: 'SQLD',
+          examDate: '2027-01-01',
+          targetTotalMinutes: 3000,
+          selectedAt: 1750000000000,
+          _v: 1,
+        }),
+      );
       renderAt('/');
       expect(screen.queryByText(/must be used within/i)).toBeNull();
-      expect(screen.getByText('자격증 선택').textContent).toBe('자격증 선택');
+      expect(screen.getByText('SQLD').textContent).toBe('SQLD');
     });
   });
 });
