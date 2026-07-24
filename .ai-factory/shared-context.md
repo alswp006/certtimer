@@ -188,3 +188,4 @@ CRITICAL: Before creating any new function, type, or component, check the list a
 
 ## Already Implemented (do NOT duplicate or overwrite)
 - 0001: TypeScript 타입 정의 + RouteState 계약 (files: src/lib/types.ts)
+- 0002: localStorage 저장소 헬퍼 (CRUD + 안전 처리) (files: src/lib/storage.ts)
