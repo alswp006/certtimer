@@ -2,10 +2,10 @@ import type { ReactNode } from "react";
 import { Paragraph, Spacing, Skeleton } from "@toss/tds-mobile";
 
 /**
- * 빈 상태 — 아이콘(선택) + 제목 + 설명 + 보조(weak) CTA.
+ * EmptyState — 아이콘(선택) + 제목 + 설명 + 보조(weak) CTA.
  *
- * Pre-built (재구현 금지): 목록/결과가 비었을 때 맨텍스트("데이터 없음") 대신 사용.
- * ⚠️ action은 '보조 액션'이다(variant="weak"). 하단 고정 1차 CTA(SubmitFooter/
+ * Pre-built (재구현 금지): 목록/결과가 비었을 때 사용. 단순 텍스트 안내 대신 EmptyState로.
+ * ⚠️ action은 '보조 액션'(variant="weak"). 하단 고정 1차 CTA(SubmitFooter/
  *   FixedBottomCTA)와 같은 라벨·액션을 중복 노출하지 마라(비활성 버튼 중복 = 군더더기).
  */
 export function EmptyState({
@@ -54,9 +54,10 @@ export function EmptyState({
 }
 
 /**
- * 로딩 상태 — TDS Skeleton n줄. 맨텍스트 "불러오는 중" 금지.
+ * LoadingState — TDS Skeleton n줄 로딩 표시.
  *
  * Pre-built (재구현 금지): 데이터 패칭 중 표시 → 도착 시 실제 컴포넌트로 교체.
+ * 단순 로딩 텍스트 안내 대신 사용.
  */
 export function LoadingState({
   rows = 3,
