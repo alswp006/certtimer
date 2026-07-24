@@ -12,11 +12,15 @@
 
 /**
  * Certification metadata — available exams user can select
+ * examDate/recommendedTotalMinutes/isBuiltIn are populated for built-in presets (see src/lib/constants/certs.ts)
  */
 export interface Certification {
   id: string;
   name: string;
   category: string;
+  examDate?: string; // ISO "YYYY-MM-DD"
+  recommendedTotalMinutes?: number; // 권장 총 학습시간(분), >= 60
+  isBuiltIn?: boolean;
   _v: 1;
 }
 
@@ -73,6 +77,18 @@ export interface AppFlags {
   onboarded: boolean;
   reportDisclaimerSeen: boolean;
   _v: 1;
+}
+
+/**
+ * QuizQuestion — static quiz bank content (bundled code constant, not persisted directly)
+ */
+export interface QuizQuestion {
+  id: string;
+  type: 'ox' | 'mcq';
+  question: string;
+  answer: boolean | string; // ox: boolean, mcq: correct option string
+  explanation: string;
+  options?: string[]; // required for type: 'mcq'
 }
 
 // ============================================================================
